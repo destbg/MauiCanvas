@@ -12,6 +12,8 @@ public class MainPage : ContentPage
     {
         DeviceDisplay.Current.MainDisplayInfoChanged += OnDisplayInfoChanged;
 
+        BackgroundColor = Colors.Black;
+
         mainDrawing = new MainDrawing();
 
         graphicsView = new()
@@ -21,7 +23,36 @@ public class MainPage : ContentPage
             VerticalOptions = LayoutOptions.Fill
         };
 
-        Content = graphicsView;
+        Slider slider = new()
+        {
+            HorizontalOptions = LayoutOptions.End,
+            VerticalOptions = LayoutOptions.End,
+            WidthRequest = 100,
+            Margin = new Thickness(0, 0, 10, 0)
+        };
+
+        slider.ValueChanged += OnSliderValueChanged;
+
+        Content = new Grid
+        {
+            Children =
+            {
+                new Image
+                {
+                    Source = "background.png",
+                    Aspect = Aspect.AspectFill,
+                    IsOpaque = true,
+                    Opacity = .5,
+                },
+                graphicsView,
+                slider
+            }
+        };
+    }
+
+    private void OnSliderValueChanged(object sender, ValueChangedEventArgs e)
+    {
+        mainDrawing.VolumeChanged(e.NewValue / 20);
     }
 
     protected override async void OnAppearing()

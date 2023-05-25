@@ -1,19 +1,47 @@
 ﻿using System.Diagnostics;
+using Plugin.Maui.Audio;
 
 namespace MauiCanvas;
 
 public class MainDrawing : IDrawable
 {
+    public const int Max = 15;
+
+    private const float Increment = 21;
+
     private readonly Stopwatch stopwatch;
-    private readonly List<CircleModel> circles;
+    private readonly CircleModel[] circles;
+    private readonly ICanvas fakeCanvas;
 
     public MainDrawing()
     {
         stopwatch = Stopwatch.StartNew();
-        circles = new List<CircleModel>();
+        circles = new CircleModel[Max];
+        fakeCanvas = new FakeCanvas();
+
+        int x = 0;
+
+        for (float i = Increment; x < Max; i += Increment, x++)
+        {
+            IAudioPlayer audioPlayer = AudioManager.Current.CreatePlayer(
+                FileSystem.OpenAppPackageFileAsync($"key-{x}.wav").GetAwaiter().GetResult()
+            );
+
+            audioPlayer.Volume = 0;
+
+            circles[x] = new CircleModel(stopwatch, audioPlayer, i, x);
+        }
     }
 
     public float RefreshRate { get; set; }
+
+    public void VolumeChanged(double value)
+    {
+        for (int i = 0; i < Max; i++)
+        {
+            circles[i].VolumeChanged(value);
+        }
+    }
 
     public void Draw(ICanvas canvas, RectF dirtyRect)
     {
@@ -28,14 +56,11 @@ public class MainDrawing : IDrawable
 
         int x = 0;
 
-        for (float i = 20; i < maxSize; i += 20, x++)
+        for (float i = Increment; x < Max; i += Increment, x++)
         {
-            if (circles.Count == x)
-            {
-                circles.Add(new CircleModel(stopwatch, i, x));
-            }
+            bool overMax = i >= maxSize;
 
-            circles[x].Draw(canvas, halfWidth, halfHeight);
+            circles[x].Draw(overMax ? fakeCanvas : canvas, halfWidth, halfHeight, overMax);
         }
     }
 }

@@ -14,8 +14,8 @@ public class App : Application
         Window window = base.CreateWindow(activationState);
 
 		window.Title = "Canvas";
-		window.Width = 600;
-		window.Height = 600;
+		window.Width = 1600;
+		window.Height = 950;
 		window.MinimumHeight = 200;
 		window.MinimumWidth = 200;
 

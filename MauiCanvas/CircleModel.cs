@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using Plugin.Maui.Audio;
 
 namespace MauiCanvas;
 
@@ -6,24 +7,37 @@ public class CircleModel
 {
     public const float StrokeCircleSize = 4;
 
-    private const double AnimationDuration = 3;
-    private const byte DefaultColor = 0;
+    private const double AnimationDuration = 2;
+    private const float DefaultHue = .2528f;
+    private const float DefaultSaturation = .33f;
+    private const float DefaultValue = .2f;
+    private const float VelocityModifier = .6f;
 
     private readonly Stopwatch stopwatch;
+    private readonly IAudioPlayer audioPlayer;
     private readonly float dis;
     private readonly int index;
+    private readonly Color defaultColor;
 
     private float prevCircleY;
     private TimeSpan? hitTime;
 
-    public CircleModel(Stopwatch stopwatch, float dis, int index)
+    public CircleModel(Stopwatch stopwatch, IAudioPlayer audioPlayer, float dis, int index)
     {
         this.stopwatch = stopwatch;
+        this.audioPlayer = audioPlayer;
         this.dis = dis;
         this.index = index;
+
+        defaultColor = Color.FromHsv(DefaultHue, DefaultSaturation, DefaultValue);
     }
 
-    public void Draw(ICanvas canvas, float halfWidth, float halfHeight)
+    public void VolumeChanged(double value)
+    {
+        audioPlayer.Volume = value;
+    }
+
+    public void Draw(ICanvas canvas, float halfWidth, float halfHeight, bool overMax)
     {
         Color color;
 
@@ -34,20 +48,19 @@ public class CircleModel
             if (leftTime > AnimationDuration)
             {
                 hitTime = null;
-                color = Color.FromRgb(DefaultColor, DefaultColor, DefaultColor);
+                color = defaultColor;
             }
             else
             {
                 double percent = leftTime / AnimationDuration;
-                double dp = percent * 2;
+                float dp = (float)percent * 2;
 
-                byte b = (byte)Math.Floor(percent > .5 ? (255 * (2 - dp)) : (255 * dp));
-                color = Color.FromRgb(b, b, b);
+                color = Color.FromHsv(DefaultHue, DefaultSaturation, (percent > .5 ? (2 - dp) : dp) + DefaultValue);
             }
         }
         else
         {
-            color = Color.FromRgb(DefaultColor, DefaultColor, DefaultColor);
+            color = defaultColor;
         }
 
         canvas.FillColor = color;
@@ -62,19 +75,24 @@ public class CircleModel
         canvas.FillCircle((dis * (float)Math.Cos(Math.PI)) + halfWidth, halfHeight, 3);
         canvas.FillCircle((dis * (float)Math.Cos(Math.PI * 2)) + halfWidth, halfHeight, 3);
 
-        double velocity = 0.5 - (index * 0.01);
+        double velocity = VelocityModifier - (VelocityModifier / 2 * ((index + 1d) / MainDrawing.Max));
         double angle = Math.PI + (stopwatch.Elapsed.TotalSeconds * velocity % (Math.PI * 2));
 
         float circleX = (dis * (float)Math.Cos(angle)) + halfWidth;
         float circleY = (dis * (float)Math.Sin(angle)) + halfHeight;
 
-        canvas.FillColor = Colors.White;
+        canvas.FillColor = Color.FromHsv(DefaultHue, DefaultSaturation, .65f);
 
         canvas.FillCircle(circleX, circleY, StrokeCircleSize);
 
         if (prevCircleY != default && ((prevCircleY < halfHeight && circleY > halfHeight) || (prevCircleY > halfHeight && circleY < halfHeight)))
         {
             hitTime = stopwatch.Elapsed;
+
+            if (!overMax)
+            {
+                audioPlayer.Play();
+            }
         }
 
         prevCircleY = circleY;
