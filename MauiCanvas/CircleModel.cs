@@ -11,7 +11,7 @@ public class CircleModel
     private const float DefaultHue = .2528f;
     private const float DefaultSaturation = .33f;
     private const float DefaultValue = .2f;
-    private const float VelocityModifier = .6f;
+    private const float VelocityModifier = .8f;
 
     private readonly Stopwatch stopwatch;
     private readonly IAudioPlayer audioPlayer;
