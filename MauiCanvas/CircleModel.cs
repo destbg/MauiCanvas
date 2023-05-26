@@ -17,7 +17,6 @@ public class CircleModel
     private readonly IAudioPlayer audioPlayer;
     private readonly float dis;
     private readonly int index;
-    private readonly Color defaultColor;
 
     private float prevCircleY;
     private TimeSpan? hitTime;
