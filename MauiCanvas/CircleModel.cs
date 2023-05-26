@@ -28,8 +28,6 @@ public class CircleModel
         this.audioPlayer = audioPlayer;
         this.dis = dis;
         this.index = index;
-
-        defaultColor = Color.FromHsv(DefaultHue, DefaultSaturation, DefaultValue);
     }
 
     public void VolumeChanged(double value)
@@ -39,7 +37,7 @@ public class CircleModel
 
     public void Draw(ICanvas canvas, float halfWidth, float halfHeight, bool overMax)
     {
-        Color color;
+        float value = 0f;
 
         if (hitTime != null)
         {
@@ -48,20 +46,17 @@ public class CircleModel
             if (leftTime > AnimationDuration)
             {
                 hitTime = null;
-                color = defaultColor;
             }
             else
             {
                 double percent = leftTime / AnimationDuration;
                 float dp = (float)percent * 2;
 
-                color = Color.FromHsv(DefaultHue, DefaultSaturation, (percent > .5 ? (2 - dp) : dp) + DefaultValue);
+                value = percent > .5 ? (2 - dp) : dp;
             }
         }
-        else
-        {
-            color = defaultColor;
-        }
+
+        Color color = Color.FromHsv(DefaultHue, DefaultSaturation, value + DefaultValue);
 
         canvas.FillColor = color;
         canvas.StrokeColor = color;
@@ -81,7 +76,7 @@ public class CircleModel
         float circleX = (dis * (float)Math.Cos(angle)) + halfWidth;
         float circleY = (dis * (float)Math.Sin(angle)) + halfHeight;
 
-        canvas.FillColor = Color.FromHsv(DefaultHue, DefaultSaturation, .65f);
+        canvas.FillColor = Color.FromHsv(DefaultHue, DefaultSaturation, value + .65f);
 
         canvas.FillCircle(circleX, circleY, StrokeCircleSize);
 
