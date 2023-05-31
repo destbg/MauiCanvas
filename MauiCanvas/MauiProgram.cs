@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using CommunityToolkit.Maui;
+using Microsoft.Extensions.Logging;
 
 namespace MauiCanvas;
 
@@ -8,7 +9,8 @@ public static class MauiProgram
 	{
         MauiAppBuilder builder = MauiApp.CreateBuilder();
 
-		builder.UseMauiApp<App>();
+		builder.UseMauiApp<App>()
+            .UseMauiCommunityToolkit();
 
 #if DEBUG
 		builder.Logging.AddDebug();

@@ -1,9 +1,9 @@
-﻿using System.Diagnostics;
-using Plugin.Maui.Audio;
+﻿using Plugin.Maui.Audio;
+using System.Diagnostics;
 
-namespace MauiCanvas;
+namespace MauiCanvas.Pages.PendulumWave;
 
-public class CircleModel
+public class PendulumWaveModel
 {
     public const float StrokeCircleSize = 4;
 
@@ -21,7 +21,7 @@ public class CircleModel
     private float prevCircleY;
     private TimeSpan? hitTime;
 
-    public CircleModel(Stopwatch stopwatch, IAudioPlayer audioPlayer, float dis, int index)
+    public PendulumWaveModel(Stopwatch stopwatch, IAudioPlayer audioPlayer, float dis, int index)
     {
         this.stopwatch = stopwatch;
         this.audioPlayer = audioPlayer;
@@ -69,7 +69,7 @@ public class CircleModel
         canvas.FillCircle((dis * (float)Math.Cos(Math.PI)) + halfWidth, halfHeight, 3);
         canvas.FillCircle((dis * (float)Math.Cos(Math.PI * 2)) + halfWidth, halfHeight, 3);
 
-        double velocity = VelocityModifier - (VelocityModifier / 2 * ((index + 1d) / MainDrawing.Max));
+        double velocity = VelocityModifier - (VelocityModifier / 2 * ((index + 1d) / PendulumWaveDrawable.Max));
         double angle = Math.PI + (stopwatch.Elapsed.TotalSeconds * velocity % (Math.PI * 2));
 
         float circleX = (dis * (float)Math.Cos(angle)) + halfWidth;

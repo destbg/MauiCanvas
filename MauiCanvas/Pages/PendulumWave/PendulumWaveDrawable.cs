@@ -1,22 +1,22 @@
-﻿using System.Diagnostics;
-using Plugin.Maui.Audio;
+﻿using Plugin.Maui.Audio;
+using System.Diagnostics;
 
-namespace MauiCanvas;
+namespace MauiCanvas.Pages.PendulumWave;
 
-public class MainDrawing : IDrawable
+public class PendulumWaveDrawable : IDrawable
 {
     public const int Max = 15;
 
     private const float Increment = 21;
 
     private readonly Stopwatch stopwatch;
-    private readonly CircleModel[] circles;
+    private readonly PendulumWaveModel[] circles;
     private readonly ICanvas fakeCanvas;
 
-    public MainDrawing()
+    public PendulumWaveDrawable()
     {
         stopwatch = Stopwatch.StartNew();
-        circles = new CircleModel[Max];
+        circles = new PendulumWaveModel[Max];
         fakeCanvas = new FakeCanvas();
 
         int x = 0;
@@ -29,11 +29,9 @@ public class MainDrawing : IDrawable
 
             audioPlayer.Volume = 0;
 
-            circles[x] = new CircleModel(stopwatch, audioPlayer, i, x);
+            circles[x] = new PendulumWaveModel(stopwatch, audioPlayer, i, x);
         }
     }
-
-    public float RefreshRate { get; set; }
 
     public void VolumeChanged(double value)
     {
@@ -50,7 +48,7 @@ public class MainDrawing : IDrawable
         canvas.StrokeSize = strokeSize;
 
         float size = Math.Min(dirtyRect.Width, dirtyRect.Height);
-        float maxSize = (size / 2) - strokeSize - CircleModel.StrokeCircleSize;
+        float maxSize = (size / 2) - strokeSize - PendulumWaveModel.StrokeCircleSize;
         float halfWidth = dirtyRect.Width / 2;
         float halfHeight = dirtyRect.Height / 2;
 

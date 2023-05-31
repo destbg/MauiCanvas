@@ -1,4 +1,7 @@
-﻿namespace MauiCanvas;
+﻿using MauiCanvas.Pages.PendulumWave;
+using MauiCanvas.Pages.Snake;
+
+namespace MauiCanvas;
 
 public class App : Application
 {
@@ -6,7 +9,22 @@ public class App : Application
 	{
 		UserAppTheme = AppTheme.Dark;
 
-		MainPage = new MainPage();
+		MainPage = new Shell
+		{
+			Items =
+			{
+				new ShellContent
+				{
+					Title = "Snake",
+					ContentTemplate = new DataTemplate(typeof(SnakePage)),
+				},
+                new ShellContent
+                {
+                    Title = "Pendulum Wave",
+                    ContentTemplate = new DataTemplate(typeof(PendulumWavePage)),
+                }
+            }
+		};
 	}
 
     protected override Window CreateWindow(IActivationState activationState)
@@ -14,8 +32,8 @@ public class App : Application
         Window window = base.CreateWindow(activationState);
 
 		window.Title = "Canvas";
-		window.Width = 1600;
-		window.Height = 950;
+		window.Width = 900;
+		window.Height = 900;
 		window.MinimumHeight = 200;
 		window.MinimumWidth = 200;
 
