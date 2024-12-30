@@ -4,7 +4,7 @@ using Timer = System.Timers.Timer;
 
 namespace MauiCanvas.Pages.Snake;
 
-public class SnakePage : ContentPage
+public partial class SnakePage : ContentPage
 {
     private const int gameSpeed = 200;
 

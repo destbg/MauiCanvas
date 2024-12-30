@@ -1,6 +1,6 @@
 ﻿namespace MauiCanvas.Pages.PendulumWave;
 
-public class PendulumWavePage : GraphicsPage
+public partial class PendulumWavePage : GraphicsPage
 {
     private readonly PendulumWaveDrawable drawable;
 

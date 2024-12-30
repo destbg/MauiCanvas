@@ -95,12 +95,12 @@ public class FakeCanvas : ICanvas
 
     public SizeF GetStringSize(string value, IFont font, float fontSize)
     {
-        return default(SizeF);
+        return default;
     }
 
     public SizeF GetStringSize(string value, IFont font, float fontSize, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment)
     {
-        return default(SizeF);
+        return default;
     }
 
     public void ResetState()
